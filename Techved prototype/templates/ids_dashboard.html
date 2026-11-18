@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIH SOC | Behavioral ML Intrusion Detection System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">
+            <div class="brand-icon" style="background: linear-gradient(135deg, var(--accent-red), var(--accent-orange));">🛡️</div>
+            <span>SIH SOC — Behavioral ML IDS Console</span>
+        </div>
+        <div class="nav-links">
+            <button id="theme-toggle" class="theme-toggle-btn">☀️ Light Mode</button>
+            <a href="/login" class="nav-link">Portal Login</a>
+            <a href="/ids" class="nav-link active">SOC Live Monitor</a>
+            <span id="poll-indicator" style="font-size: 0.8rem; color: var(--accent-green);">● LIVE POLLING (1.5s)</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Top Status Bar -->
+        <div class="dashboard-header">
+            <div>
+                <h1 style="font-size: 1.6rem; font-weight: 700;">Real-Time Intrusion Detection System</h1>
+                <p style="color: var(--text-secondary); font-size: 0.875rem;">
+                    Multi-Model Architecture: Supervised Random Forest + Unsupervised Isolation Forest + Behavioral Baselines
+                </p>
+            </div>
+            <div>
+                <span id="system-status" class="status-badge protected">PROTECTED</span>
+            </div>
+        </div>
+
+        <!-- Demo Control Panel -->
+        <div class="card" style="margin-bottom: 1.5rem; border-color: var(--accent-cyan);">
+            <div class="card-header" style="margin-bottom: 0.5rem;">
+                <span class="card-title" style="color: var(--accent-cyan);">⚡ Interactive Demo Triggers (Judges Presentation Control)</span>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Generates local traffic events in real time</span>
+            </div>
+            <div class="demo-buttons">
+                <button class="btn-demo" id="btn-demo-normal">🟢 1. Normal Login</button>
+                <button class="btn-demo" id="btn-demo-forgot">🟡 2. Genuine Forgotten Password</button>
+                <button class="btn-demo" id="btn-demo-bf">🔴 3. Brute Force Attack (25 Burst)</button>
+                <button class="btn-demo" id="btn-demo-slow">⚠️ 4. Low-and-Slow Attack</button>
+                <button class="btn-demo" id="btn-demo-cs">🎯 5. Credential Stuffing</button>
+                <button class="btn-demo" id="btn-demo-sqli" style="border-color: var(--accent-purple); color: var(--accent-purple);">💉 6. SQL Injection Attack</button>
+                <button class="btn-demo btn-demo-reset" id="btn-demo-reset" style="margin-left: auto;">🔄 Reset Demo State</button>
+            </div>
+        </div>
+
+
+        <!-- Top Grid: Threat Score Gauge & Model Breakdown -->
+        <div class="grid-top">
+            <!-- Threat Score Gauge Card -->
+            <div class="card" style="text-align: center;">
+                <div class="card-header" style="justify-content: center;">
+                    <span class="card-title">Combined Threat Score</span>
+                </div>
+                <div class="threat-display">
+                    <div id="threat-score-num" class="threat-score-num risk-low">0.05</div>
+                    <div id="threat-level-badge" class="threat-level-badge bg-risk-low">LOW RISK</div>
+                    <div id="action-badge" style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-top: 0.5rem;">
+                        TIERED RESPONSE: <span id="action-text" style="color: var(--accent-green);">ALLOW</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Model Scores Breakdown Card -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">ML Pipeline & Score Weights</span>
+                </div>
+                <div class="score-row">
+                    <span class="score-label">Supervised Random Forest Score (Weight: 50%)</span>
+                    <span id="score-rf" class="score-val" style="color: var(--accent-blue);">0.02</span>
+                </div>
+                <div class="score-row">
+                    <span class="score-label">Predicted Traffic Category</span>
+                    <span id="predicted-category" class="score-val" style="color: var(--accent-purple);">NORMAL</span>
+                </div>
+                <div class="score-row">
+                    <span class="score-label">Isolation Forest Anomaly Score (Weight: 30%)</span>
+                    <span id="score-iso" class="score-val" style="color: var(--accent-yellow);">0.05</span>
+                </div>
+                <div class="score-row">
+                    <span class="score-label">User Behavioral Baseline Deviation (Weight: 20%)</span>
+                    <span id="score-dev" class="score-val" style="color: var(--accent-cyan);">0.02</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature Inspection Cards Grid -->
+        <div style="margin-bottom: 1.5rem;">
+            <h3 style="font-size: 0.9rem; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 0.75rem; letter-spacing: 0.5px;">
+                📊 Extracted Behavioral Features (60s Rolling Window)
+            </h3>
+            <div class="grid-3col" style="grid-template-columns: repeat(6, 1fr);">
+                <div class="feature-metric">
+                    <div id="feat-reqs10" class="feature-val">0</div>
+                    <div class="feature-lbl">Reqs / 10s</div>
+                </div>
+                <div class="feature-metric">
+                    <div id="feat-reqs60" class="feature-val">0</div>
+                    <div class="feature-lbl">Reqs / 60s</div>
+                </div>
+                <div class="feature-metric">
+                    <div id="feat-failed60" class="feature-val" style="color: var(--accent-orange);">0</div>
+                    <div class="feature-lbl">Failures / 60s</div>
+                </div>
+                <div class="feature-metric">
+                    <div id="feat-interval" class="feature-val">60s</div>
+                    <div class="feature-lbl">Avg Interval</div>
+                </div>
+                <div class="feature-metric">
+                    <div id="feat-accounts" class="feature-val">1</div>
+                    <div class="feature-lbl">Target Accounts</div>
+                </div>
+                <div class="feature-metric">
+                    <div id="feat-device" class="feature-val" style="color: var(--accent-green);">KNOWN</div>
+                    <div class="feature-lbl">Device Baseline</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lower Grid: Live Traffic & Explanations / Alerts -->
+        <div class="grid-top" style="grid-template-columns: 1.8fr 1.2fr;">
+            <!-- Live Traffic Event Table -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">🌐 Live Auth & Traffic Stream</span>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Auto-updating</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>User</th>
+                                <th>Endpoint</th>
+                                <th>Status</th>
+                                <th>Device ID</th>
+                            </tr>
+                        </thead>
+                        <tbody id="traffic-table-body">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: var(--text-muted);">Awaiting traffic events...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Model Explanations & Alerts Feed -->
+            <div>
+                <!-- Model Decision Explanation -->
+                <div class="card" style="margin-bottom: 1.25rem;">
+                    <div class="card-header">
+                        <span class="card-title">🤖 Model Decision Explanation</span>
+                    </div>
+                    <ul id="explanation-list" class="explanation-list">
+                        <li>System operating normally. No active threats detected.</li>
+                    </ul>
+                </div>
+
+                <!-- Recent Security Alerts -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">🚨 Recent Security Alerts</span>
+                    </div>
+                    <div id="alerts-feed" style="max-height: 240px; overflow-y: auto;">
+                        <div style="font-size: 0.85rem; color: var(--text-muted); padding: 0.5rem 0;">No active security alerts logged.</div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/ids_dashboard.js"></script>
+</body>
+</html>
+

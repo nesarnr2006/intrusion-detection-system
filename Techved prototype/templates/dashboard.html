@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BankGuard Digital | User Account Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">
+            <div class="brand-icon">BG</div>
+            <span>BankGuard Digital Banking</span>
+        </div>
+        <div class="nav-links">
+            <button id="theme-toggle" class="theme-toggle-btn">☀️ Light Mode</button>
+            <span style="font-size: 0.85rem; color: var(--accent-green);">● Authenticated: {{ account.username }}</span>
+            <a href="/ids" class="nav-link" style="color: var(--accent-cyan);">🛡️ Open SOC IDS Monitor</a>
+            <a href="/api/logout" class="nav-link">Logout</a>
+        </div>
+
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-header">
+            <div>
+                <h1 style="font-size: 1.6rem; font-weight: 700;">Welcome back, {{ account.username }}</h1>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">Account Number: {{ account.account_number }}</p>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Session Security Status</div>
+                <div class="status-badge protected">BEHAVIORAL IDS ACTIVE</div>
+            </div>
+        </div>
+
+        <div class="grid-top" style="grid-template-columns: 1fr 2fr;">
+            <!-- Account Balance Card -->
+            <div class="card" style="background: linear-gradient(135deg, #121824, #1e293b);">
+                <div class="card-header">
+                    <span class="card-title">Primary Savings Balance</span>
+                </div>
+                <div style="font-size: 2.8rem; font-weight: 800; font-family: var(--font-code); color: var(--accent-green); margin: 0.5rem 0;">
+                    {{ account.balance }}
+                </div>
+                <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                    Last Login Session: {{ account.last_login }}
+                </div>
+            </div>
+
+            <!-- Profile Details Card -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Verified Profile Details</span>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 0.5rem;">
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">REGISTERED EMAIL</div>
+                        <div style="font-size: 0.95rem; font-weight: 600;">{{ account.email }}</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">SECURITY REGION</div>
+                        <div style="font-size: 0.95rem; font-weight: 600;">Localhost / Demozone</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">2FA STATUS</div>
+                        <div style="font-size: 0.95rem; font-weight: 600; color: var(--accent-green);">Enabled (ML Adaptive)</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">KNOWN DEVICE BASELINE</div>
+                        <div style="font-size: 0.95rem; font-weight: 600; color: var(--accent-cyan);">Registered MAC Verified</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">Recent Transactions</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tx in account.transactions %}
+                        <tr>
+                            <td>{{ tx.date }}</td>
+                            <td style="font-weight: 500;">{{ tx.desc }}</td>
+                            <td style="font-family: var(--font-code); font-weight: 600; color: {{ 'var(--accent-green)' if '+' in tx.amount else 'var(--text-primary)' }};">
+                                {{ tx.amount }}
+                            </td>
+                            <td><span class="badge badge-success">{{ tx.status }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

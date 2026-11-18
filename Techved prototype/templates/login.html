@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BankGuard Portal | Secure Login</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">
+            <div class="brand-icon">BG</div>
+            <span>BankGuard Digital Portal</span>
+        </div>
+        <div class="nav-links">
+            <button id="theme-toggle" class="theme-toggle-btn">☀️ Light Mode</button>
+            <a href="/login" class="nav-link active">Portal Login</a>
+            <a href="/ids" class="nav-link" style="color: var(--accent-cyan);">🛡️ Open SOC IDS Dashboard</a>
+        </div>
+
+    </nav>
+
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="brand-icon" style="margin: 0 auto; width: 44px; height: 44px; font-size: 1.25rem;">🔐</div>
+                <h1 class="auth-title">BankGuard Digital</h1>
+                <p class="auth-subtitle">Protected by ML Behavioral Intrusion Detection</p>
+            </div>
+
+            <!-- Notification Messages -->
+            <div id="alert-box" class="alert-box"></div>
+
+            <!-- Login Form -->
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="username">Username / Account ID</label>
+                    <input type="text" id="username" class="form-input" placeholder="e.g. demo1" required value="demo1">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Security Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter password" required value="password123">
+                </div>
+
+                <button type="submit" id="btn-submit" class="btn btn-primary">
+                    Authenticate & Sign In
+                </button>
+            </form>
+
+            <!-- Step-Up OTP Verification Section (Hidden initially) -->
+            <div id="otp-section" style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px dashed var(--border-color);">
+                <div class="alert-box alert-warning" style="display: block;">
+                    ⚠️ <strong>SECURITY STEP-UP CHALLENGE REQUIRED</strong><br>
+                    Unusual behavior detected by ML engine. Enter 6-digit OTP sent to registered mobile.
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="otp">2FA Verification OTP Code</label>
+                    <input type="text" id="otp" class="form-input" placeholder="Enter 123456" maxlength="6" value="123456">
+                </div>
+                <button type="button" id="btn-verify-otp" class="btn btn-primary">
+                    Verify OTP & Authorize
+                </button>
+            </div>
+
+            <!-- Demo Hint Box -->
+            <div style="margin-top: 1.5rem; padding: 0.85rem; background: var(--bg-dark); border-radius: 8px; font-size: 0.8rem; color: var(--text-secondary); border: 1px solid var(--border-color);">
+                <strong style="color: var(--accent-cyan);">💡 Hackathon Demo Credentials:</strong><br>
+                • <code>demo1</code> / <code>password123</code><br>
+                • <code>demo2</code> / <code>securepass456</code><br>
+                • <code>demo3</code> / <code>adminpass789</code><br>
+                <em>All login attempts are logged and analyzed by the ML IDS pipeline in real-time.</em>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/login.js"></script>
+</body>
+</html>
